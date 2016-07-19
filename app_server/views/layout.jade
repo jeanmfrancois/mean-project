@@ -6,24 +6,26 @@ html
     link(rel='stylesheet', href='/bootstrap/css/amelia.bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    .navbar.navbar-default.navbar-fixed-top
+   .navbar.navbar-default.navbar-fixed-top
       .container
         .navbar-header
           a.navbar-brand(href='/') JF Builds
-          button.navbar-toggle(type='button', data-toggle='collapse',
-➥ data-target='#navbar-main')
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
             span.icon-bar
             span.icon-bar
             span.icon-bar
         #navbar-main.navbar-collapse.collapse
           ul.nav.navbar-nav
             li
-              a(href='/about') About
-  .container
-    block content
-    footer
-      .row
-        .col-xs-12
-          small &copy; Jean-francois Nepton 2016
-  script(src='/javascripts/jquery-2.2.4.js')
-  script(src='/bootstrap/js/bootstrap.min.js')
+              a(href='/about/') About
+
+    .container
+      block content
+
+      footer
+        .row
+          .col-xs-12
+            small &copy; Simon Holmes 2014
+
+    script(src='/javascripts/jquery-2.2.4.js')
+    script(src='/bootstrap/js/bootstrap.min.js')
