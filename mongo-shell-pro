@@ -1,0 +1,11 @@
+# You should have mongod and mongo version > 3
+# Run the following command on Cloud 9 to update
+# Remove the existing mongodb: sudo apt-get remove mongodb* --purge
+# Then we can follow commands from MongoDB docs below:
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+# echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+# sudo apt-get update
+# sudo apt-get install -y mongodb-org
+# You can then create a Run Configuration using Runner: Shell
+# Command should be the name of this file: ./mongo-shell-pro
+mongo ds023435.mlab.com:23435/heroku_nhfnbhd2 -u jfbuser -p jean4JN010116

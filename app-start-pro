@@ -1,0 +1,3 @@
+# Start the app in development with nodemon and setting NODE_ENV to "production"
+# Should not be run from script unless using npm start instead...
+NODE_ENV=production MONGOLAB_URI='mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2' nodemon
