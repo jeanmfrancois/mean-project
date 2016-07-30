@@ -1,4 +1,4 @@
 # Create a Run Configuration using a Runner: Shell, 
 # Command should be: ./mongod-start
-# May need to give permision prior: chmod a+x mongod-start
+# May need to give permision prior: chmod a+x mongod-start-dev
 mongod --nojournal --dbpath=data
