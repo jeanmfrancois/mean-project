@@ -7,8 +7,8 @@ var apiOptions = {
 console.log("Setting Default Dev/Local Env URL");
 console.log("Remote?" + process.env.REMOTE);
 
-if (process.env.DOMAIN !== null) {
-    console.log("DOMAIN NOT 'null' Setting to " + process.env.DOMAIN);
+if (process.env.DOMAIN !== null || process.env.DOMAIN !== undefined) {
+    console.log("DOMAIN NOT 'null' or 'undefine' Setting to " + process.env.DOMAIN);
     apiOptions.server = process.env.DOMAIN;
 }
 else if (process.env.NODE_ENV === 'development' && process.env.REMOTE === "true") {

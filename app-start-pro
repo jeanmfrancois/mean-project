@@ -4,4 +4,8 @@
 #   DOMAIN - Base domain for hosting domain. Ex:'https://localhost:3000'
 #   MONGOLAB_URI - (Optional) A String to MongoLab database, If none supplied, uses local "mongodb://localhost/Loc8r"
 #       Ex:'mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2'
+# *Note: When deploying to Production on Heroku, you must set the required variables:
+# heroku config:set NODE_ENV=production --app <app-name>
+# heroku config:set REMOTE=true --app <app-name>
+# heroku config:set DOMAIN='http://jf-builds.herokuapp.com' --app <app-name>
 NODE_ENV=production REMOTE=true MONGOLAB_URI='mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2' DOMAIN="https://jf-builds.herokuapp.com" nodemon
