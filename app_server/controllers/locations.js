@@ -1,26 +1,20 @@
 var request = require('request');
-
 var apiOptions = {
     server: "http://localhost:3000"
 };
-
 console.log("Setting Default Dev/Local Env URL");
 console.log("Remote?" + process.env.REMOTE);
-
 // if (process.env.DOMAIN !== null || process.env.DOMAIN !== undefined) {
 //     console.log("DOMAIN NOT 'null' or 'undefine' Setting to " + process.env.DOMAIN);
 //     apiOptions.server = process.env.DOMAIN;
 // } else 
-
 if (process.env.NODE_ENV === 'development' && process.env.REMOTE === "true") {
     console.log("DOMAIN was 'null', Setting Dev/Remote Env URL");
     apiOptions.server = "https://mean-project-jeanmfrancois1.c9users.io";
-}
-else if (process.env.NODE_ENV === 'production' && process.env.REMOTE === "true") {
+} else if (process.env.NODE_ENV === 'production' && process.env.REMOTE === "true") {
     console.log("DOMAIN was 'null', Setting Pro/Remote Env URL");
     apiOptions.server = "https://jf-builds.herokuapp.com";
 }
-
 // var requestOptions = {
 //     url: apiOptions.server + "/api",
 //     method: "GET",
@@ -29,7 +23,6 @@ else if (process.env.NODE_ENV === 'production' && process.env.REMOTE === "true")
 //         offset: 20
 //     }
 // };
-
 // request(requestOptions, function(err, response, body) {
 //     if (err) {
 //         console.log(err);
@@ -41,7 +34,6 @@ else if (process.env.NODE_ENV === 'production' && process.env.REMOTE === "true")
 //         console.log(response.statusCode);
 //     }
 // });
-
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
     var requestOptions, path;
@@ -53,34 +45,29 @@ module.exports.homelist = function(req, res) {
         qs: {
             lng: -122.4788130,
             lat: 37.662578037,
-            maxDistance: 99999999999
+            maxDistance: 300
         }
     };
-    request(
-        requestOptions,
-        function(err, response, body) {
-            var i, data;
-            data = body;
-            for (i = 0; i < data.length; i++) {
-                data[i].distance = _formatDistance(data[i].distance);
-            }
-            renderHomepage(req, res, data);
+    request(requestOptions, function(err, response, body) {
+        var i, data;
+        data = body;
+        for (i = 0; i < data.length; i++) {
+            data[i].distance = _formatDistance(data[i].distance);
         }
-    );
+        renderHomepage(req, res, data);
+    });
     var _formatDistance = function(distance) {
         var numDistance, unit;
         if (distance > 1) {
-            numDistance = parseFloat(distance).toFixed(1);
-            unit = 'km';
-        }
-        else {
-            numDistance = parseInt(distance * 1000, 10);
-            unit = 'm';
+            numDistance = parseFloat(distance / 1000).toFixed(1);
+            unit = ' km';
+        } else {
+            numDistance = parseInt(distance, 10);
+            unit = ' m';
         }
         return numDistance + unit;
     };
 };
-
 /* GET 'Location info' page */
 module.exports.locationInfo = function(req, res) {
     res.render('location-info', {
@@ -129,7 +116,6 @@ module.exports.locationInfo = function(req, res) {
         }
     });
 };
-
 /* GET 'Add review' page */
 module.exports.addReview = function(req, res) {
     res.render('location-review-form', {
@@ -139,14 +125,12 @@ module.exports.addReview = function(req, res) {
         }
     });
 };
-
 var renderHomepage = function(req, res, responseBody) {
     var message;
     if (!(responseBody instanceof Array)) {
         message = "API lookup error";
         responseBody = [];
-    }
-    else {
+    } else {
         if (!responseBody.length) {
             message = "No places found nearby";
         }
