@@ -1,0 +1,10 @@
+# To Start the app in development with nodemon and setting NODE_ENV to "production"
+# Create a Run Configuration using a Runner: Shell, 
+# Command should be: ./app-start-dev
+# May need to give permision prior: chmod a+x app-start-dev-rem
+# Environment Variables:
+#   NODE_ENV - Type of deployment, "development" or "production" accepted
+#   DOMAIN - Base domain for hosting domain. Ex:'https://localhost:3000'
+#   MONGOLAB_URI - (Optional) A String to MongoLab database, If none supplied, uses local "mongodb://localhost/Loc8r"
+#       Ex:'mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2'
+NODE_ENV=development REMOTE=true DOMAIN="https://mean-project-jeanmfrancois1.c9users.io" nodemon

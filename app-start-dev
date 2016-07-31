@@ -1,5 +1,0 @@
-# To Start the app in development with nodemon and setting NODE_ENV to "production"
-# Create a Run Configuration using a Runner: Shell, 
-# Command should be: ./app-start-dev
-# May need to give permision prior: chmod a+x app-start-dev
-NODE_ENV=development nodemon

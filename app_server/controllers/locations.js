@@ -1,32 +1,66 @@
+var request = require('request');
+
+var apiOptions = {
+    server: "http://localhost:3000"
+};
+
+console.log("Setting Default Dev/Local Env URL");
+console.log("Remote?" + process.env.REMOTE);
+
+if (process.env.DOMAIN !== null) {
+    console.log("DOMAIN NOT 'null' Setting to " + process.env.DOMAIN);
+    apiOptions.server = process.env.DOMAIN;
+}
+else if (process.env.NODE_ENV === 'development' && process.env.REMOTE === "true") {
+    console.log("DOMAIN was 'null', Setting Dev/Remote Env URL");
+    apiOptions.server = "https://mean-project-jeanmfrancois1.c9users.io";
+}
+else if (process.env.NODE_ENV === 'production' && process.env.REMOTE === "true") {
+    console.log("DOMAIN was 'null', Setting Pro/Remote Env URL");
+    apiOptions.server = "https://jf-builds.herokuapp.com";
+}
+
+// var requestOptions = {
+//     url: apiOptions.server + "/api",
+//     method: "GET",
+//     json: {},
+//     qs: {
+//         offset: 20
+//     }
+// };
+
+// request(requestOptions, function(err, response, body) {
+//     if (err) {
+//         console.log(err);
+//     }
+//     else if (response.statusCode === 200) {
+//         console.log(body);
+//     }
+//     else {
+//         console.log(response.statusCode);
+//     }
+// });
+
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
-    res.render('locations-list', {
-        title: 'Loc8r - find a place to work with wifi',
-        pageHeader: {
-            title: 'Loc8r',
-            strapline: 'Find places to work with wifi near you!'
-        },
-        sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for.",
-        locations: [{
-            name: 'Starcups',
-            address: '125 High Street, Reading, RG6 1PS',
-            rating: 3,
-            facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-            distance: '100m'
-        }, {
-            name: 'Cafe Hero',
-            address: '125 High Street, Reading, RG6 1PS',
-            rating: 4,
-            facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-            distance: '200m'
-        }, {
-            name: 'Burger Queen',
-            address: '125 High Street, Reading, RG6 1PS',
-            rating: 2,
-            facilities: ['Food', 'Premium wifi'],
-            distance: '250m'
-        }]
-    });
+    var requestOptions, path;
+    path = '/api/locations';
+    requestOptions = {
+        url: apiOptions.server + path,
+        method: "GET",
+        json: {},
+        qs: {
+            lng: -0.7992599,
+            lat: 51.378091,
+            maxDistance: 20
+        }
+    };
+    request(
+        requestOptions,
+        function(err, response, body) {
+            renderHomepage(req, res, body);
+        }
+    );
 };
 
 /* GET 'Location info' page */
@@ -85,5 +119,17 @@ module.exports.addReview = function(req, res) {
         pageHeader: {
             title: 'Review Starcups'
         }
+    });
+};
+
+var renderHomepage = function(req, res, responseBody) {
+    res.render('locations-list', {
+        title: 'Loc8r - find a place to work with wifi',
+        pageHeader: {
+            title: 'Loc8r',
+            strapline: 'Find places to work with wifi near you!'
+        },
+        sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint ? Let Loc8r help you find the place you're looking for.",
+        locations: responseBody
     });
 };

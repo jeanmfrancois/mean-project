@@ -1,3 +1,7 @@
 # Start the app in development with nodemon and setting NODE_ENV to "production"
 # Should not be run from script unless using npm start instead...
-NODE_ENV=production MONGOLAB_URI='mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2' nodemon
+#   NODE_ENV - Type of deployment, "development" or "production" accepted
+#   DOMAIN - Base domain for hosting domain. Ex:'https://localhost:3000'
+#   MONGOLAB_URI - (Optional) A String to MongoLab database, If none supplied, uses local "mongodb://localhost/Loc8r"
+#       Ex:'mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2'
+NODE_ENV=production REMOTE=true MONGOLAB_URI='mongodb://jfbuser:jean4JN010116@ds023435.mlab.com:23435/heroku_nhfnbhd2' DOMAIN="https://jf-builds.herokuapp.com" nodemon
