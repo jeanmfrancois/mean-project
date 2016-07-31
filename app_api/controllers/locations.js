@@ -1,28 +1,22 @@
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
-
 var sendJSONresponse = function(res, status, content) {
   res.status(status);
   res.json(content);
 };
-
 var theEarth = (function() {
   var earthRadius = 6371; // km, miles is 3959
-
   var getDistanceFromRads = function(rads) {
     return parseFloat(rads * earthRadius);
   };
-
   var getRadsFromDistance = function(distance) {
     return parseFloat(distance / earthRadius);
   };
-
   return {
     getDistanceFromRads: getDistanceFromRads,
     getRadsFromDistance: getRadsFromDistance
   };
 })();
-
 /* GET list of locations */
 module.exports.locationsListByDistance = function(req, res) {
   var lng = parseFloat(req.query.lng);
@@ -34,10 +28,10 @@ module.exports.locationsListByDistance = function(req, res) {
   };
   var geoOptions = {
     spherical: true,
-    maxDistance: maxDistance,//theEarth.getRadsFromDistance(maxDistance),
+    maxDistance: maxDistance, //theEarth.getRadsFromDistance(maxDistance),
     num: 10
   };
-  if ((!lng && lng!==0) || (!lat && lat!==0) || !maxDistance) {
+  if ((!lng && lng !== 0) || (!lat && lat !== 0) || !maxDistance) {
     console.log('locationsListByDistance missing params');
     sendJSONresponse(res, 404, {
       "message": "lng, lat and maxDistance query parameters are all required"
@@ -57,12 +51,11 @@ module.exports.locationsListByDistance = function(req, res) {
     }
   });
 };
-
 var buildLocationList = function(req, res, results, stats) {
   var locations = [];
   results.forEach(function(doc) {
     locations.push({
-      distance: doc.dis,//theEarth.getDistanceFromRads(doc.dis),
+      distance: doc.dis, //theEarth.getDistanceFromRads(doc.dis),
       name: doc.obj.name,
       address: doc.obj.address,
       rating: doc.obj.rating,
@@ -72,27 +65,24 @@ var buildLocationList = function(req, res, results, stats) {
   });
   return locations;
 };
-
 /* GET a location by the id */
 module.exports.locationsReadOne = function(req, res) {
   console.log('Finding location details', req.params);
   if (req.params && req.params.locationid) {
-    Loc
-      .findById(req.params.locationid)
-      .exec(function(err, location) {
-        if (!location) {
-          sendJSONresponse(res, 404, {
-            "message": "locationid not found"
-          });
-          return;
-        } else if (err) {
-          console.log(err);
-          sendJSONresponse(res, 404, err);
-          return;
-        }
-        console.log(location);
-        sendJSONresponse(res, 200, location);
-      });
+    Loc.findById(req.params.locationid).exec(function(err, location) {
+      if (!location) {
+        sendJSONresponse(res, 404, {
+          "message": "locationid not found"
+        });
+        return;
+      } else if (err) {
+        console.log(err);
+        sendJSONresponse(res, 404, err);
+        return;
+      }
+      console.log(location);
+      sendJSONresponse(res, 200, location);
+    });
   } else {
     console.log('No locationid specified');
     sendJSONresponse(res, 404, {
@@ -100,7 +90,6 @@ module.exports.locationsReadOne = function(req, res) {
     });
   }
 };
-
 /* POST a new location */
 /* /api/locations */
 module.exports.locationsCreate = function(req, res) {
@@ -131,7 +120,6 @@ module.exports.locationsCreate = function(req, res) {
     }
   });
 };
-
 /* PUT /api/locations/:locationid */
 module.exports.locationsUpdateOne = function(req, res) {
   if (!req.params.locationid) {
@@ -140,68 +128,96 @@ module.exports.locationsUpdateOne = function(req, res) {
     });
     return;
   }
+  Loc.findById(req.params.locationid).select('-reviews -rating').exec(function(err, location) {
+    if (!location) {
+      sendJSONresponse(res, 404, {
+        "message": "locationid not found"
+      });
+      return;
+    } else if (err) {
+      sendJSONresponse(res, 400, err);
+      return;
+    }
+    location.name = req.body.name;
+    location.address = req.body.address;
+    location.facilities = req.body.facilities.split(",");
+    location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
+    location.openingTimes = [{
+      days: req.body.days1,
+      opening: req.body.opening1,
+      closing: req.body.closing1,
+      closed: req.body.closed1,
+        }, {
+      days: req.body.days2,
+      opening: req.body.opening2,
+      closing: req.body.closing2,
+      closed: req.body.closed2,
+        }];
+    location.save(function(err, location) {
+      var thisReview;
+      if (err) {
+        console.log(err);
+        sendJSONresponse(res, 400, err);
+      } else {
+        updateAverageRating(location._id);
+        thisReview = location.reviews[location.reviews.length - 1];
+        sendJSONresponse(res, 201, thisReview);
+      }
+    });
+  });
+};
+
+// TODO Externalize - This is repeated in ./reviews
+var updateAverageRating = function(locationid) {
+  console.log("Update rating average for", locationid);
   Loc
-    .findById(req.params.locationid)
-    .select('-reviews -rating')
+    .findById(locationid)
+    .select('reviews')
     .exec(
       function(err, location) {
-        if (!location) {
-          sendJSONresponse(res, 404, {
-            "message": "locationid not found"
-          });
-          return;
-        } else if (err) {
-          sendJSONresponse(res, 400, err);
-          return;
+        if (!err) {
+          doSetAverageRating(location);
         }
-        location.name = req.body.name;
-        location.address = req.body.address;
-        location.facilities = req.body.facilities.split(",");
-        location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
-        location.openingTimes = [{
-          days: req.body.days1,
-          opening: req.body.opening1,
-          closing: req.body.closing1,
-          closed: req.body.closed1,
-        }, {
-          days: req.body.days2,
-          opening: req.body.opening2,
-          closing: req.body.closing2,
-          closed: req.body.closed2,
-        }];
-        location.save(function(err, location) {
-          if (err) {
-            sendJSONresponse(res, 404, err);
-          } else {
-            sendJSONresponse(res, 200, location);
-          }
-        });
+      });
+};
+
+// TODO Externalize - This is repeated in ./reviews
+var doSetAverageRating = function(location) {
+  var i, reviewCount, ratingAverage, ratingTotal;
+  if (location.reviews && location.reviews.length > 0) {
+    reviewCount = location.reviews.length;
+    ratingTotal = 0;
+    for (i = 0; i < reviewCount; i++) {
+      ratingTotal = ratingTotal + location.reviews[i].rating;
+    }
+    ratingAverage = parseInt(ratingTotal / reviewCount, 10);
+    location.rating = ratingAverage;
+    location.save(function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Average rating updated to", ratingAverage);
       }
-  );
+    });
+  }
 };
 
 /* DELETE /api/locations/:locationid */
 module.exports.locationsDeleteOne = function(req, res) {
   var locationid = req.params.locationid;
   if (locationid) {
-    Loc
-      .findByIdAndRemove(locationid)
-      .exec(
-        function(err, location) {
-          if (err) {
-            console.log(err);
-            sendJSONresponse(res, 404, err);
-            return;
-          }
-          console.log("Location id " + locationid + " deleted");
-          sendJSONresponse(res, 204, null);
-        }
-    );
+    Loc.findByIdAndRemove(locationid).exec(function(err, location) {
+      if (err) {
+        console.log(err);
+        sendJSONresponse(res, 404, err);
+        return;
+      }
+      console.log("Location id " + locationid + " deleted");
+      sendJSONresponse(res, 204, null);
+    });
   } else {
     sendJSONresponse(res, 404, {
       "message": "No locationid"
     });
   }
 };
-
-

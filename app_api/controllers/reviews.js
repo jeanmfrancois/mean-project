@@ -52,6 +52,7 @@ var doAddReview = function(req, res, location) {
   }
 };
 
+// TODO Externalize - This is repeated in ./locations
 var updateAverageRating = function(locationid) {
   console.log("Update rating average for", locationid);
   Loc
@@ -65,6 +66,7 @@ var updateAverageRating = function(locationid) {
       });
 };
 
+// TODO Externalize - This is repeated in ./locations
 var doSetAverageRating = function(location) {
   var i, reviewCount, ratingAverage, ratingTotal;
   if (location.reviews && location.reviews.length > 0) {
