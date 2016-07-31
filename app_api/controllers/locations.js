@@ -25,7 +25,6 @@ var theEarth = (function() {
 
 /* GET list of locations */
 module.exports.locationsListByDistance = function(req, res) {
-  console.log("Looking at locations by dis");
   var lng = parseFloat(req.query.lng);
   var lat = parseFloat(req.query.lat);
   var maxDistance = parseFloat(req.query.maxDistance);
@@ -40,7 +39,7 @@ module.exports.locationsListByDistance = function(req, res) {
   };
   if (!lng || !lat || !maxDistance) {
     console.log('locationsListByDistance missing params');
-    sendJSONresponse(res, 400, {
+    sendJSONresponse(res, 404, {
       "message": "lng, lat and maxDistance query parameters are all required"
     });
     return;
@@ -82,7 +81,7 @@ module.exports.locationsReadOne = function(req, res) {
       .findById(req.params.locationid)
       .exec(function(err, location) {
         if (!location) {
-          sendJSONresponse(res, 400, {
+          sendJSONresponse(res, 404, {
             "message": "locationid not found"
           });
           return;
