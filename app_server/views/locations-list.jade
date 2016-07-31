@@ -21,8 +21,8 @@ block content
               span.badge.pull-right.badge-default= location.distance
             p.address= location.address
             p
-              //each facility in location.facilities
-               // span.label.label-warning= facility
-               // | &nbsp;
+              each facility in location.facilities
+                span.label.label-warning= facility
+                | &nbsp;
     .col-xs-12.col-sm-4 
       p.lead= sidebar
