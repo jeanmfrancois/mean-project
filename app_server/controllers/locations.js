@@ -7,11 +7,12 @@ var apiOptions = {
 console.log("Setting Default Dev/Local Env URL");
 console.log("Remote?" + process.env.REMOTE);
 
-if (process.env.DOMAIN !== null || process.env.DOMAIN !== undefined) {
-    console.log("DOMAIN NOT 'null' or 'undefine' Setting to " + process.env.DOMAIN);
-    apiOptions.server = process.env.DOMAIN;
-}
-else if (process.env.NODE_ENV === 'development' && process.env.REMOTE === "true") {
+// if (process.env.DOMAIN !== null || process.env.DOMAIN !== undefined) {
+//     console.log("DOMAIN NOT 'null' or 'undefine' Setting to " + process.env.DOMAIN);
+//     apiOptions.server = process.env.DOMAIN;
+// } else 
+
+if (process.env.NODE_ENV === 'development' && process.env.REMOTE === "true") {
     console.log("DOMAIN was 'null', Setting Dev/Remote Env URL");
     apiOptions.server = "https://mean-project-jeanmfrancois1.c9users.io";
 }
